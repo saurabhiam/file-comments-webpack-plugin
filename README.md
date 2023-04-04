@@ -14,3 +14,88 @@ A Webpack plugin that  **checks**  whether the specified **comment headers**  ar
 ```bash
 npm i -D file-comments-webpack-plugin
 ```
+
+
+## Configuration
+```js
+const  FileCommentsPlugin = require('file-comments-webpack-plugin');
+
+const  config = {
+	plugins: [
+		new FileCommentsPlugin({
+			templateText: `/**
+			* Copyright © {{year}} {{author}}. All rights reserved.
+			*/`,
+			fix: true,
+			templateVariables: {
+				year: new Date().getFullYear(),
+				author: 'Saurabh Sharma'
+			},
+			onFileCommentMismatch: "replace", //'prepend' or 'replace'
+			commentRegex: /\/\*\*[\s\S]*?Copyright[\s\S]*?All rights[\s\S]*?\*\//
+		});
+	]
+}
+module.exports = config;
+```
+
+#### With source directory and ignore patterns
+```js
+const  FileCommentsPlugin = require('file-comments-webpack-plugin');
+
+const  config = {
+	plugins: [
+		new FileCommentsPlugin({
+			srcDir: './src',
+			ignorePatterns: ['**/package.json', '**/*.test.{js,jsx}'],
+			templateText: `/**
+			* Copyright © {{year}} {{author}}. All rights reserved.
+			*/`,
+			fix: true,
+			templateVariables: {
+				year: new Date().getFullYear(),
+				author: 'Saurabh Sharma'
+			},
+			onFileCommentMismatch: "replace", //'prepend' or 'replace'
+			commentRegex: /\/\*\*[\s\S]*?Copyright[\s\S]*?All rights[\s\S]*?\*\//
+		});
+	]
+}
+module.exports = config;
+```
+
+#### With template file
+```js
+const  FileCommentsPlugin = require('file-comments-webpack-plugin');
+
+const  config = {
+	plugins: [
+		new FileCommentsPlugin({
+			templateFile: './config/copyright-template.txt', //templateFile has more precedence over templateText
+			fix: true,
+			templateVariables: {
+				year: new Date().getFullYear(),
+				author: 'Saurabh Sharma'
+			},
+			onFileCommentMismatch: "replace", //'prepend' or 'replace'
+			commentRegex: /\/\*\*[\s\S]*?Copyright[\s\S]*?All rights[\s\S]*?\*\//
+		});
+	]
+}
+module.exports = config;
+```
+
+
+## Options
+
+|Option|Value|Default value|Description
+|--|--|--|--|
+|`srcDir`|`<source dir>`|[`webpack context`](https://webpack.js.org/configuration/entry-context/#context)| The source directory to process files in.
+|`fix`|`Boolean`|`false`| Whether to automatically fix missing or mismatched comments.
+|`extensions`|`Array<string>`|`['js', 'jsx', 'ts', 'tsx', 'json', 'css', 'scss']`|   The file extensions to include.
+|`ignorePatterns`|`Array<string>`|`[]`| The source directory to process files in.
+|`templateFile`|`<file path>`| | The template file path to use.
+|`templateText`|`String`| | The template text to use.
+|`templateVariables`|`Object`| `{}` | The template variables to use.
+|`onFileCommentMismatch`|`"prepend"\|"replace"`| `"prepend"` | How to handle mismatched comment.
+|`commentRegex`|`RegExp`| `//` | The regular expression for matching comments to perform the action on comment mismatch (onFileCommentMismatch).
