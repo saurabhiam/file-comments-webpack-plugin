@@ -1,0 +1,41 @@
+{
+    "name": "file-comments-webpack-plugin",
+    "version": "1.2.1",
+    "description": "A webpack plugin that checks whether the specified comment headers are included in the source files of a project and fixes it automatically.",
+    "keywords": [
+        "file-comments-webpack-plugin",
+        "file-comments",
+        "comment header",
+        "comment header autofix",
+        "file comments webpack plugin",
+        "front-end",
+        "web",
+        "webpack",
+        "plugin",
+        "building tool"
+    ],
+    "homepage": "https://github.com/saurabhiam/file-comments-webpack-plugin",
+    "bugs": {
+        "url": "https://github.com/saurabhiam/file-comments-webpack-plugin/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:saurabhiam/file-comments-webpack-plugin.git"
+    },
+    "author": "Saurabh Sharma <me@saurabhsharma.me> (https://saurabhsharma.me)",
+    "main": "index.js",
+    "files": [
+        "index.js"
+    ],
+    "scripts": {},
+    "dependencies": {},
+    "devDependencies": {
+        "glob": "^9.3.4",
+        "minimatch": "^8.0.3",
+        "path": "^0.12.7"
+    },
+    "license": "GPL-3.0",
+    "engines": {
+        "node": ">= 12.13.0"
+    }
+}
