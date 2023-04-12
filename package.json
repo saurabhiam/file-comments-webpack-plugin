@@ -30,11 +30,11 @@
     "scripts": {},
     "dependencies": {},
     "devDependencies": {
-        "glob": "^9.3.4",
-        "minimatch": "^8.0.3",
+        "glob": "^10.0.0",
+        "minimatch": "^9.0.0",
         "path": "^0.12.7"
     },
-    "license": "GPL-3.0",
+    "license": "MIT",
     "engines": {
         "node": ">= 12.13.0"
     }
