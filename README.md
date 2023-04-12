@@ -22,20 +22,20 @@ npm i -D file-comments-webpack-plugin
 const  FileCommentsPlugin = require('file-comments-webpack-plugin');
 
 const  config = {
-	plugins: [
-		new FileCommentsPlugin({
-			templateText: `/**
-			* Copyright © {{year}} {{author}}. All rights reserved.
-			*/`,
-			fix: true,
-			templateVariables: {
-				year: new Date().getFullYear(),
-				author: 'Saurabh Sharma'
-			},
-			onFileCommentMismatch: "replace", //'prepend' or 'replace'
-			commentRegex: /\/\*\*[\s\S]*?Copyright[\s\S]*?All rights[\s\S]*?\*\//
-		});
-	]
+    plugins: [
+        new FileCommentsPlugin({
+            templateText: `/**
+            * Copyright © {{year}} {{author}}. All rights reserved.
+            */`,
+            fix: true,
+            templateVariables: {
+                year: new Date().getFullYear(),
+                author: 'Saurabh Sharma'
+            },
+            onFileCommentMismatch: "replace", //'prepend' or 'replace'
+            commentRegex: /\/\*\*[\s\S]*?Copyright[\s\S]*?All rights[\s\S]*?\*\//
+        });
+    ]
 }
 module.exports = config;
 ```
@@ -46,22 +46,22 @@ module.exports = config;
 const  FileCommentsPlugin = require('file-comments-webpack-plugin');
 
 const  config = {
-	plugins: [
-		new FileCommentsPlugin({
-			srcDir: './src',
-			ignorePatterns: ['**/package.json', '**/*.test.{js,jsx}'],
-			templateText: `/**
-			* Copyright © {{year}} {{author}}. All rights reserved.
-			*/`,
-			fix: true,
-			templateVariables: {
-				year: new Date().getFullYear(),
-				author: 'Saurabh Sharma'
-			},
-			onFileCommentMismatch: "replace", //'prepend' or 'replace'
-			commentRegex: /\/\*\*[\s\S]*?Copyright[\s\S]*?All rights[\s\S]*?\*\//
-		});
-	]
+    plugins: [
+        new FileCommentsPlugin({
+            srcDir: './src',
+            ignorePatterns: ['**/package.json', '**/*.test.{js,jsx}'],
+            templateText: `/**
+            * Copyright © {{year}} {{author}}. All rights reserved.
+            */`,
+            fix: true,
+            templateVariables: {
+                year: new Date().getFullYear(),
+                author: 'Saurabh Sharma'
+            },
+            onFileCommentMismatch: "replace", //'prepend' or 'replace'
+            commentRegex: /\/\*\*[\s\S]*?Copyright[\s\S]*?All rights[\s\S]*?\*\//
+        });
+    ]
 }
 module.exports = config;
 ```
@@ -72,18 +72,18 @@ module.exports = config;
 const  FileCommentsPlugin = require('file-comments-webpack-plugin');
 
 const  config = {
-	plugins: [
-		new FileCommentsPlugin({
-			templateFile: './config/copyright-template.txt', //templateFile has more precedence over templateText
-			fix: true,
-			templateVariables: {
-				year: new Date().getFullYear(),
-				author: 'Saurabh Sharma'
-			},
-			onFileCommentMismatch: "replace", //'prepend' or 'replace'
-			commentRegex: /\/\*\*[\s\S]*?Copyright[\s\S]*?All rights[\s\S]*?\*\//
-		});
-	]
+    plugins: [
+        new FileCommentsPlugin({
+            templateFile: './config/copyright-template.txt', //templateFile has more precedence over templateText
+            fix: true,
+            templateVariables: {
+                year: new Date().getFullYear(),
+                author: 'Saurabh Sharma'
+            },
+            onFileCommentMismatch: "replace", //'prepend' or 'replace'
+            commentRegex: /\/\*\*[\s\S]*?Copyright[\s\S]*?All rights[\s\S]*?\*\//
+        });
+    ]
 }
 module.exports = config;
 ```
