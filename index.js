@@ -18,7 +18,7 @@ class FileCommentsPlugin {
         templateFile: '',
         templateText: '',
         templateVariables: {},
-        onMismatchCopyright: 'prepend',
+        onFileCommentMismatch: 'prepend',
         commentRegex: '',
     }
     constructor(options) {
@@ -35,7 +35,7 @@ class FileCommentsPlugin {
         compiler.hooks.emit.tapAsync(FileCommentsPlugin.name, (compilation, callback) => {
             const warningLog = [], errorLog = [];
 
-            const { srcDir, extensions, fix, ignorePatterns, templateFile, templateText, templateVariables, commentRegex, onMismatchCopyright } = this.options
+            const { srcDir, extensions, fix, ignorePatterns, templateFile, templateText, templateVariables, commentRegex, onFileCommentMismatch } = this.options
 
             const sourceDir = !!srcDir ? srcDir : compiler.context;
             const exts = extensions.join(',');
@@ -63,31 +63,44 @@ class FileCommentsPlugin {
             files.forEach(file => {
                 let content = fs.readFileSync(file, 'utf8');
                 const lines = content.split('\n');
-                
 
-                //First check for comment starting and ending:
-                const firstCommentIndex = lines.findIndex(line => line.startsWith('/**'));
-                if (firstCommentIndex !== -1) {
-                    // CASE: IF COMMENT IS FOUND
-                    const firstCommentEndIndex = lines.slice(firstCommentIndex).findIndex(line => line.endsWith('*/'));
-                    if (firstCommentEndIndex !== -1) {
-                        const firstCommentLines = lines.slice(firstCommentIndex, firstCommentIndex + firstCommentEndIndex + 1);
-                        let firstCommentText = firstCommentLines.join('\n');
-                        firstCommentText = normalizeText(firstCommentText);
-                        if (commentRegex) {
-                            const regex = new RegExp(commentRegex);
-                            if (regex.test(firstCommentText)) {
-                                // IF COPYRIGHT REGEX IS MATCHED BUT COMMENT DIFFERS
-                                if (firstCommentText !== commentText) {
-                                    switch (onMismatchCopyright) {
-                                        case 'prepend':
-                                            content = commentText + '\n\n' + content;
-                                            break;
-                                        case 'replace':
-                                            lines.splice(firstCommentIndex, firstCommentEndIndex + 1);
-                                            content = [...lines.slice(0, firstCommentIndex), commentText, ...lines.slice(firstCommentIndex)].join('\n');
-                                            break;
+                // DETECT COMMENT BEFORE NON-COMMENT CONTENT IN FILES
+                const firstNonCommentIndex = lines.findIndex(line => line.trim() !== '' && !line.trim().startsWith('/**'));
+                if (firstNonCommentIndex > 0 && lines[firstNonCommentIndex - 1].trim().startsWith('/**')) {
+                    // COMMENT DETECTED BEFORE CONTENT
+                    const firstCommentIndex = lines.findIndex(line => line.startsWith('/**'));
+                    if (firstCommentIndex !== -1) {
+                        // CASE: IF COMMENT IS FOUND
+                        const firstCommentEndIndex = lines.slice(firstCommentIndex).findIndex(line => line.endsWith('*/'));
+                        if (firstCommentEndIndex !== -1) {
+                            const firstCommentLines = lines.slice(firstCommentIndex, firstCommentIndex + firstCommentEndIndex + 1);
+                            let firstCommentText = firstCommentLines.join('\n');
+                            firstCommentText = normalizeText(firstCommentText);
+                            if (commentRegex) {
+                                const regex = new RegExp(commentRegex);
+                                if (regex.test(firstCommentText)) {
+                                    // IF COMMENT REGEX IS MATCHED BUT COMMENT DIFFERS
+                                    if (firstCommentText !== commentText) {
+                                        switch (onFileCommentMismatch) {
+                                            case 'prepend':
+                                                content = commentText + '\n\n' + content;
+                                                break;
+                                            case 'replace':
+                                                lines.splice(firstCommentIndex, firstCommentEndIndex + 1);
+                                                content = [...lines.slice(0, firstCommentIndex), commentText, ...lines.slice(firstCommentIndex)].join('\n');
+                                                break;
+                                        }
+                                        if (fix) {
+                                            fs.writeFileSync(file, content);
+                                        } else {
+                                            warningLog.push(`\x1B[4m${file}\x1B[0m\n\x1b[33mPartial mismatched comment text found. Use 'replace' option in plugin options to replace it.\x1b[0m`)
+                                            hasWarning = true;
+                                        }
                                     }
+                                } else {
+                                    // IF COMMENT REGEX IS NOT MATCHED AT ALL
+                                    // PREPEND THE COMMENT MESSAGE
+                                    content = commentText + '\n\n' + content;
                                     if (fix) {
                                         fs.writeFileSync(file, content);
                                     } else {
@@ -95,21 +108,11 @@ class FileCommentsPlugin {
                                         hasWarning = true;
                                     }
                                 }
-                            } else {
-                                // IF COPYRIGHT REGEX IS NOT MATCHED AT ALL
-                                // PREPEND THE COMMENT MESSAGE
-                                content = commentText + '\n\n' + content;
-                                if (fix) {
-                                    fs.writeFileSync(file, content);
-                                } else {
-                                    warningLog.push(`\x1B[4m${file}\x1B[0m\n\x1b[33mPartial mismatched comment text found. Use 'replace' option in plugin options to replace it.\x1b[0m`)
-                                    hasWarning = true;
-                                }
                             }
                         }
                     }
                 } else {
-                    // CASE: IF COMMENT IS NOT FOUND
+                    // CASE: IF COMMENT IS NOT FOUND OR FOUND AFTER FILE CONTENT
                     if (fix) {
                         fs.writeFileSync(file, commentText + '\n' + content);
                     } else {
