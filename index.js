@@ -9,7 +9,23 @@ function normalizeText(text) {
 
 const PLUGIN_NAME = "File Comments Plugin";
 
+/**
+ * @class FileCommentsPlugin
+ * @classdesc A webpack plugin that checks whether the specified comment headers are included in the source files of a project and fixes it automatically.
+ */
 class FileCommentsPlugin {
+    /**
+     * @typedef {Object} Options
+     * @property {string} [srcDir='./'] - The source directory to process files in.
+     * @property {string[]} [extensions=['js', 'jsx', 'ts', 'tsx', 'json', 'css', 'scss']] - The file extensions to include.
+     * @property {boolean} [fix=false] - Whether to automatically fix missing or mismatched comments.
+     * @property {string[]} [ignorePatterns=[]] - Glob patterns to ignore in the source directory.
+     * @property {string} [templateFile=''] - The template file path to use for comment.
+     * @property {string} [templateText=''] - The template text to use for comment.
+     * @property {Object} [templateVariables={}] - Variables to use in the template text.
+     * @property {'prepend'|'replace'} [onFileCommentMismatch='prepend'] - How to handle mismatched comment.
+     * @property {RegExp} [commentRegex=''] - The regular expression for matching comments to perform the action on comment mismatch (onFileCommentMismatch).
+     */
     static defaultOptions = {
         srcDir: './',
         extensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'css', 'scss'],
@@ -21,6 +37,13 @@ class FileCommentsPlugin {
         onFileCommentMismatch: 'prepend',
         commentRegex: '',
     }
+    /**
+     * Creates a new instance of FileCommentsPlugin.
+     * @constructor
+     * @param {Options} options - The options for the plugin.
+     * @throws {Error} Throws an error if either templateFile or templateText is not provided.
+     * @throws {Error} Throws an error if commentRegex option is missing.
+     */
     constructor(options) {
         if (!options.templateFile && !options.templateText) {
             throw new Error('Either templateFile or templateText must be provided.');
