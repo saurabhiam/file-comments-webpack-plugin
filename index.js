@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
-const minimatch = require('minimatch');
+const { minimatch } = require('minimatch')
 
 function normalizeText(text) {
     return text.replace(/\r\n/g, '\n').replace(/[ \t]+/g, ' ').trim();
