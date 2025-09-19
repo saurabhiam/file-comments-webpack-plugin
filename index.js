@@ -1,7 +1,5 @@
 const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
-const { minimatch } = require('minimatch')
+const fg = require('fast-glob');
 
 function normalizeText(text) {
     return text.replace(/\r\n/g, '\n').replace(/[ \t]+/g, ' ').trim();
@@ -61,14 +59,12 @@ class FileCommentsPlugin {
             const { srcDir, extensions, fix, ignorePatterns, templateFile, templateText, templateVariables, commentRegex, onFileCommentMismatch } = this.options
 
             const sourceDir = !!srcDir ? srcDir : compiler.context;
-            const exts = extensions.join(',');
-            let files = glob.sync(`${sourceDir}/**/*.{${exts}}`);
-            if (this.options.srcDir) {
-                files = files.map((file) => path.join(compiler.context, file));
-            }
-            if (ignorePatterns) {
-                files = files.filter(file => !ignorePatterns.some(pattern => minimatch(file, pattern)));
-            }
+            const exts = extensions.map(ext => `**/*.${ext}`);
+            let files = fg.sync(exts, {
+                cwd: sourceDir,
+                ignore: ignorePatterns,
+                absolute: true
+            });
             let commentText;
             if (templateFile) {
                 commentText = fs.readFileSync(templateFile, 'utf8');

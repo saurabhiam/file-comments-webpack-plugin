@@ -1,6 +1,6 @@
 {
     "name": "file-comments-webpack-plugin",
-    "version": "1.2.9",
+    "version": "1.2.10",
     "description": "A webpack plugin that checks whether the specified comment headers are included in the source files of a project and fixes it automatically.",
     "keywords": [
         "file-comments-webpack-plugin",
@@ -28,10 +28,8 @@
         "index.js"
     ],
     "scripts": {},
-    "dependencies": {},
     "devDependencies": {
-        "glob": "^10.2.1",
-        "minimatch": "^9.0.0",
+        "fast-glob": "^3.3.3",
         "path": "^0.12.7"
     },
     "license": "MIT",
